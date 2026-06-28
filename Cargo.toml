@@ -4,3 +4,42 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+# CLI & Error handling
+clap = { version = "4.5", features = ["derive", "env"] }
+clap_complete = "4.5"
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Async & HTTP
+tokio = { version = "1.40", features = ["full"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "stream", "rustls-tls"] }
+reqwest-eventsource = "0.6"
+futures-util = "0.3"
+async-stream = "0.3"
+async-trait = "0.1.80"
+
+# Serialization & Config
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+
+# Terminal & Rendering
+crossterm = "0.28"
+colored = "2.1"
+indicatif = "0.17"
+pulldown-cmark = "0.12"
+syntect = "5.2"
+rustyline = { version = "14.0", features = ["derive", "with-file-history"] }
+
+# Utils
+dirs = "5.0"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.10", features = ["v4", "serde"] }
+arboard = "3.4"
+lazy_static = "1.5"
+
+[profile.release]
+strip = true
+lto = true
+opt-level = 3
+codegen-units = 1
