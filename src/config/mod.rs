@@ -34,14 +34,13 @@ pub fn load_config() -> Result<AppConfig> {
 pub fn save_config(config: &AppConfig) -> Result<()> {
     let path = get_config_path();
     let dir = get_config_dir();
-    
+
     if !dir.exists() {
         std::fs::create_dir_all(&dir)
             .with_context(|| format!("Failed to create config directory {:?}", dir))?;
     }
 
-    let toml = toml::to_string_pretty(config)
-        .with_context(|| "Failed to serialize config")?;
+    let toml = toml::to_string_pretty(config).with_context(|| "Failed to serialize config")?;
 
     std::fs::write(&path, toml)
         .with_context(|| format!("Failed to write config file at {:?}", path))?;

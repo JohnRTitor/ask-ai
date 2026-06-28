@@ -1,8 +1,8 @@
-use anyhow::{Context, Result};
-use std::path::PathBuf;
 use crate::session::history::ConversationHistory;
+use anyhow::{Context, Result};
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
+use std::path::PathBuf;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SessionStore {
@@ -44,7 +44,7 @@ pub fn load_session(id: &str) -> Result<SessionStore> {
 
     let json = std::fs::read_to_string(&path)
         .with_context(|| format!("Failed to read session from {:?}", path))?;
-    
+
     let store: SessionStore = serde_json::from_str(&json)?;
     Ok(store)
 }

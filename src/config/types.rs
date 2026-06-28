@@ -7,7 +7,7 @@ pub struct AppConfig {
     pub base_url: String,
     pub api_key: String,
     pub model: String,
-    
+
     #[serde(flatten)]
     pub params: SamplingParams,
 }

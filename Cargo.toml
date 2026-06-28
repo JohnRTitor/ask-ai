@@ -8,35 +8,33 @@ edition = "2024"
 clap = { version = "4.5", features = ["derive", "env"] }
 clap_complete = "4.5"
 anyhow = "1.0"
-thiserror = "1.0"
+thiserror = "2.0"
 
 # Async & HTTP
-tokio = { version = "1.40", features = ["full"] }
-reqwest = { version = "0.12", default-features = false, features = ["json", "stream", "rustls-tls"] }
-reqwest-eventsource = "0.6"
+tokio = { version = "1.52", features = ["full"] }
+reqwest = { version = "0.13", default-features = false, features = ["json", "stream", "default-tls"] }
 futures-util = "0.3"
 async-stream = "0.3"
-async-trait = "0.1.80"
+eventsource-stream = "0.2.3"
 
 # Serialization & Config
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-toml = "0.8"
+toml = "1.0"
 
 # Terminal & Rendering
-crossterm = "0.28"
-colored = "2.1"
-indicatif = "0.17"
-pulldown-cmark = "0.12"
+crossterm = "0.29"
+colored = "3.0"
+indicatif = "0.18"
+pulldown-cmark = "0.13"
 syntect = "5.2"
-rustyline = { version = "14.0", features = ["derive", "with-file-history"] }
+rustyline = { version = "18.0", features = ["derive", "with-file-history"] }
 
 # Utils
-dirs = "5.0"
+dirs = "6.0"
 chrono = { version = "0.4", features = ["serde"] }
-uuid = { version = "1.10", features = ["v4", "serde"] }
+uuid = { version = "1.22", features = ["v4", "serde"] }
 arboard = "3.4"
-lazy_static = "1.5"
 
 [profile.release]
 strip = true

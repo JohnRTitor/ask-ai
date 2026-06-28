@@ -1,10 +1,16 @@
-use serde::{Deserialize, Serialize};
 use crate::client::types::ChatMessage;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ConversationHistory {
     pub messages: Vec<ChatMessage>,
     pub system_prompt: Option<String>,
+}
+
+impl Default for ConversationHistory {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl ConversationHistory {
@@ -35,18 +41,18 @@ impl ConversationHistory {
 
     pub fn get_messages(&self) -> Vec<ChatMessage> {
         let mut all_msgs = Vec::new();
-        
+
         if let Some(sys) = &self.system_prompt {
             all_msgs.push(ChatMessage {
                 role: "system".to_string(),
                 content: sys.clone(),
             });
         }
-        
+
         all_msgs.extend(self.messages.clone());
         all_msgs
     }
-    
+
     pub fn clear(&mut self) {
         self.messages.clear();
     }

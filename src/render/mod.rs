@@ -1,13 +1,17 @@
+pub mod markdown;
 pub mod spinner;
 pub mod syntax;
-pub mod markdown;
 
 use std::io::{self, Write};
-use colored::Colorize;
-use crate::render::markdown::render_markdown;
 
 pub struct StreamRenderer {
     buffer: String,
+}
+
+impl Default for StreamRenderer {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl StreamRenderer {
@@ -19,7 +23,7 @@ impl StreamRenderer {
 
     pub fn append(&mut self, text: &str) {
         self.buffer.push_str(text);
-        
+
         // In a perfect world, we'd render the markdown incrementally.
         // For simplicity and to avoid tearing syntax highlighting, we just print the raw tokens as they arrive.
         // Once the stream completes, we'll re-render the whole block if needed, or just let the raw stream be.
@@ -30,7 +34,7 @@ impl StreamRenderer {
         print!("{}", text);
         let _ = io::stdout().flush();
     }
-    
+
     pub fn finish(&self) {
         println!("\n");
         // We could optionally re-render the whole buffer with `render_markdown` here

@@ -38,7 +38,10 @@ pub fn handle_meta_command(
         }
         "/exit" | "/quit" => Ok(true),
         _ => {
-            println!("{} Type /help for a list of commands.", format!("Unknown command: {}", cmd).red());
+            println!(
+                "{} Type /help for a list of commands.",
+                format!("Unknown command: {}", cmd).red()
+            );
             Ok(false)
         }
     }

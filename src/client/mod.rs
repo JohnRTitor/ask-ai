@@ -2,11 +2,11 @@ pub mod error;
 pub mod stream;
 pub mod types;
 
-use reqwest::Client;
-use types::{ChatCompletionRequest, ChatMessage, ModelListResponse, OllamaPsResponse};
 pub use error::{ClientError, Result};
+use reqwest::Client;
+use reqwest::Response;
 use std::time::Duration;
-use reqwest_eventsource::{EventSource, RequestBuilderExt};
+use types::{ChatCompletionRequest, ModelListResponse};
 
 #[derive(Clone)]
 pub struct ApiClient {
@@ -33,23 +33,33 @@ impl ApiClient {
         format!("{}{}", self.base_url, path)
     }
 
-    pub async fn chat_completion_stream(&self, req: &ChatCompletionRequest) -> Result<EventSource> {
+    pub async fn chat_completion_stream(&self, req: &ChatCompletionRequest) -> Result<Response> {
         let url = self.build_url("/chat/completions");
-        
-        let mut request = self.client.post(&url)
-            .json(req);
+
+        let mut request = self.client.post(&url).json(req);
 
         if !self.api_key.is_empty() && self.api_key != "none" {
             request = request.bearer_auth(&self.api_key);
         }
 
-        let source = request.eventsource().map_err(|e| ClientError::Api(e.to_string()))?;
-        Ok(source)
+        let response = request
+            .send()
+            .await
+            .map_err(|e| ClientError::Api(e.to_string()))?;
+        if !response.status().is_success() {
+            let status = response.status();
+            let err_text = response.text().await.unwrap_or_default();
+            return Err(ClientError::Api(format!(
+                "API error {}: {}",
+                status, err_text
+            )));
+        }
+        Ok(response)
     }
 
     pub async fn list_models(&self) -> Result<ModelListResponse> {
         let url = self.build_url("/models");
-        
+
         let mut request = self.client.get(&url);
         if !self.api_key.is_empty() && self.api_key != "none" {
             request = request.bearer_auth(&self.api_key);
@@ -57,7 +67,10 @@ impl ApiClient {
 
         let resp = request.send().await?;
         if !resp.status().is_success() {
-            return Err(ClientError::Api(format!("Failed to list models: {}", resp.status())));
+            return Err(ClientError::Api(format!(
+                "Failed to list models: {}",
+                resp.status()
+            )));
         }
 
         let data = resp.json::<ModelListResponse>().await?;

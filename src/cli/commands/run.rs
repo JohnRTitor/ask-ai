@@ -1,5 +1,5 @@
-use clap::Args;
 use crate::cli::args::SamplingArgs;
+use clap::Args;
 
 #[derive(Debug, Args, Clone)]
 pub struct RunArgs {

@@ -12,18 +12,7 @@ impl Spinner {
         pb.set_style(
             ProgressStyle::with_template("{spinner:.blue} {msg}")
                 .unwrap()
-                .tick_strings(&[
-                    "⠋",
-                    "⠙",
-                    "⠹",
-                    "⠸",
-                    "⠼",
-                    "⠴",
-                    "⠦",
-                    "⠧",
-                    "⠇",
-                    "⠏",
-                ]),
+                .tick_strings(&["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]),
         );
         pb.set_message(message.to_string());
         Self { pb }

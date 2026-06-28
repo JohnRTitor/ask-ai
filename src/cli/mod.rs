@@ -1,8 +1,8 @@
 pub mod args;
 pub mod commands;
 
-use clap::Parser;
 use args::GlobalArgs;
+use clap::Parser;
 pub use commands::Command;
 
 #[derive(Debug, Parser)]

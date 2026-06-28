@@ -1,6 +1,6 @@
-use pulldown_cmark::{Event, Parser, Tag, TagEnd};
-use colored::Colorize;
 use crate::render::syntax::highlight_code;
+use colored::Colorize;
+use pulldown_cmark::{Event, Parser, Tag, TagEnd};
 
 pub fn render_markdown(markdown: &str) -> String {
     let parser = Parser::new(markdown);
@@ -14,9 +14,9 @@ pub fn render_markdown(markdown: &str) -> String {
     // A simple state machine to detect <think>...</think>
     // We do a pre-pass to handle `<think>` since pulldown_cmark might treat it as raw HTML
     // We'll replace it with a custom format before parsing, or handle it during parsing.
-    
+
     // Actually, simpler to just parse HTML tags in pulldown_cmark
-    
+
     for event in parser {
         match event {
             Event::Start(Tag::Heading { level: _level, .. }) => {
@@ -53,7 +53,7 @@ pub fn render_markdown(markdown: &str) -> String {
                     output.push_str(&"\n[Thinking...]\n".dimmed().italic().to_string());
                 } else if html.contains("</think>") {
                     in_think_block = false;
-                    output.push_str(&"\n".to_string());
+                    output.push_str("\n");
                 } else {
                     output.push_str(&html);
                 }

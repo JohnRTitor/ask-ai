@@ -1,22 +1,22 @@
-use crate::repl::commands::handle_meta_command;
-use crate::session::history::ConversationHistory;
-use crate::client::{ApiClient, stream::process_stream};
-use crate::client::types::{ChatCompletionRequest, ChatMessage};
 use crate::backend::Backend;
+use crate::client::types::ChatCompletionRequest;
+use crate::client::{ApiClient, stream::process_stream};
 use crate::config::types::SamplingParams;
 use crate::render::{StreamRenderer, spinner::Spinner};
+use crate::repl::commands::handle_meta_command;
+use crate::session::history::ConversationHistory;
 use anyhow::Result;
 use colored::Colorize;
-use rustyline::error::ReadlineError;
-use rustyline::DefaultEditor;
 use futures_util::StreamExt;
+use rustyline::DefaultEditor;
+use rustyline::error::ReadlineError;
 use std::sync::Arc;
 
 pub mod commands;
 
 pub async fn run_repl(
     client: &ApiClient,
-    backend: Arc<dyn Backend>,
+    backend: Arc<Backend>,
     model: &str,
     params: &SamplingParams,
 ) -> Result<()> {
@@ -25,16 +25,19 @@ pub async fn run_repl(
         .unwrap_or_else(|| std::path::PathBuf::from("."))
         .join("ask-ai")
         .join("history.txt");
-        
+
     if let Some(parent) = history_path.parent() {
         std::fs::create_dir_all(parent)?;
     }
-    
+
     let _ = rl.load_history(&history_path);
 
     let mut history = ConversationHistory::new();
     println!("{} {}", "Chatting with".dimmed(), model.cyan().bold());
-    println!("{}", "Type /help for commands, Ctrl+C to cancel generation, Ctrl+D to exit".dimmed());
+    println!(
+        "{}",
+        "Type /help for commands, Ctrl+C to cancel generation, Ctrl+D to exit".dimmed()
+    );
 
     loop {
         let readline = rl.readline(">>> ");
@@ -44,7 +47,7 @@ pub async fn run_repl(
                 if line.is_empty() {
                     continue;
                 }
-                
+
                 let _ = rl.add_history_entry(line);
                 let _ = rl.save_history(&history_path);
 
@@ -82,7 +85,7 @@ pub async fn run_repl(
                             renderer.append(&event.content);
                             full_response.push_str(&event.content);
                         }
-                        
+
                         renderer.finish();
                         history.add_assistant_message(&full_response);
                     }
